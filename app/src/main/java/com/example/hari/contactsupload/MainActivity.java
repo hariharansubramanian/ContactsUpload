@@ -21,53 +21,51 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         ContentResolver content = getContentResolver();
         Cursor c = content.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-        Log.d(TAG,"Phase 1 started");
+        ArrayList<String> contacts = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<>();
         if (c.moveToFirst()) {
-            ArrayList<String> contacts = new ArrayList<>();
             do {
                 String contactId = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
-                Log.d(TAG,"Got the ID");
                 if (Integer.parseInt(c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                     Cursor num = content.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{contactId}, null);
                     while (num.moveToNext()) {
                         String contactNum = num.getString(num.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                         contacts.add(contactNum);
-                        Log.d(TAG, "Got Phone number and Added to list..");
+                        String contactNames=num.getString(num.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                        names.add(contactNames);
                     }
                     num.close();
                 }
-                Log.d(TAG,"Prepare for contact numbers..");
-                for (int i = 0; i <contacts.size() ; i++) {
-                    Log.d(TAG,(contacts.get(i)));
-
-                }
-
-            }while(c.moveToNext());
-
-
-
-        }c.close();
+            }
+            while (c.moveToNext());
+        }
+        for (int i = 0; i < contacts.size(); i++) {
+            Log.d(TAG, contacts.get(i));
+            Log.d(TAG,names.get(i));
+        }
+        c.close();
     }
 
-        @Override
-        public boolean onCreateOptionsMenu (Menu menu){
-            // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.menu_main, menu);
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
             return true;
         }
 
-        @Override
-        public boolean onOptionsItemSelected (MenuItem item){
-            // Handle action bar item clicks here. The action bar will
-            // automatically handle clicks on the Home/Up button, so long
-            // as you specify a parent activity in AndroidManifest.xml.
-            int id = item.getItemId();
-
-            //noinspection SimplifiableIfStatement
-            if (id == R.id.action_settings) {
-                return true;
-            }
-
-            return super.onOptionsItemSelected(item);
-        }
+        return super.onOptionsItemSelected(item);
     }
+}
