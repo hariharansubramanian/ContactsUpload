@@ -30,7 +30,7 @@ public class MainActivity extends ActionBarActivity {
                 if (Integer.parseInt(c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                     Cursor num = content.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{contactId}, null);
                     while (num.moveToNext()) {
-                        String contactNum = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        String contactNum = num.getString(num.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                         contacts.add(contactNum);
                         Log.d(TAG, "Got Phone number and Added to list..");
                     }
